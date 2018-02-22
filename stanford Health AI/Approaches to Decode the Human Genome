@@ -1,0 +1,239 @@
+http://cs522.stanford.edu/notes/anshulkundaje.html
+Professor Anshul Kundaje
+
+Machine Learning Approaches to Decode the Human Genome
+
+anshul.kundaje.net
+
+
+The Human Genome Project
+
+In 2003, after 10 years of work, costing about 3 billion dollars, we got a first draft of the genome
+
+Genome = long string of A, C, T, G nucleotides
+
+Exact sequence encodes cellular function, identity, etc.
+
+~3 billion nucleotides
+
+These letters represent some average kind of genome for mankind.
+
+Population sequencing to identify disease-associated genetic variants
+
+Fast forwarding to today, there's been a revolution in genome sequencing technologies.
+
+Sequencing costs dropped from 3 billion dollars to close to 1000 dollars in the span of a few years.
+
+Sequencing machines have reduced in size
+
+Oxford Nanopore technology = fits in your palm; effectively a USB device
+
+Live sequences and streams data directly into computer
+
+One-time use
+
+Useful for remote areas
+
+Number of genomes being sequenced rising faster than Moore's Law
+
+Advantage of cheap sequencing:
+
+Can conduct population sequencing
+
+With the consensus human genome, at specific positions of the genome, individuals can differ. This is genetic variance.
+
+Genetic variation is mostly not harmful, just makes us different
+
+Genome-wide association study: can detect statistically significant associations with disease of interest for individual genomes
+
+Being heavily used today
+
+Can identify loci, but not sure how to act on this information
+
+Not sure what loci does or how loci translates into some molecule that we could perhaps counteract with a drug or whatnot
+
+This is the area of functional genomics: take large sequence genome databases and annotate what every position in genome does/does not do
+
+To answer basic questions in functional genomics, we need to think about the anatomy of the genome.
+
+A sequence of a gene encodes a protein. Genes, proteins are building blocks of the cells for it to perform various activities.
+
+By expressing different proteins at different times, can produce different cells with different function
+
+Proteins are the workhorses
+
+Unique expression of proteins defines cell function
+
+
+Cell is a complex control system
+
+Regulate which proteins are expressed by controlling genes (activate/repress)
+
+Among 3 billion base pairs, ~99% base pairs are non-coding (potentially do something else); only ~1% encode proteins
+
+Control elements (on/off) are scattered throughout the 99% - we don't know where they are or what they do.
+
+How to decide if specific sequence in genome is control element or not?
+
+The cell does this with epigenetic modifications; there are a number of proteins that can be attached
+
+Depends on epigenetic proteins that interact with a loci; can perform sequencing to generate genome-wide profiles of epigenetic modifications
+
+There is an epigenetic language/code - beyond A, C, G, T - that dynamically decides what portion of sequence is active or not
+
+One genome sequence is identical in all cell types/tissues in body
+
+How does one genome encode for so many cell types?
+
+Each cellular state corresponds to a specific repertoire of proteins that are expressed expression = specific combination of epigenetic control elements expressed
+
+If you want to decode how a genome encodes function, need to think about in terms of cell state.
+
+NIH created the epigenetic cube; x-axis = 100s of cell types/tissues, y-axis = genomic coordinates (3 billion positions), z-axis = 100s of biochemical measurements
+
+This is where machine learning, probabilistic models, and deep learning can help understand this massive amount of data.
+
+3 questions we ask are:
+
+1) Identifying tissue-specific control elements
+
+2) Learning sequence code of control elements
+
+3) Interpreting disease-associated genetic variation (now we see a mutation in the human genome, we can predict what would happen if you broke that sequence)
+
+First challenge: cube has massive amount of data; need to reduce to some compressed representation
+
+No single biomarker just encodes function.
+
+Evolution is smart; uses combinations of biochemical markers to encode a function
+
+Combinatorial chromatin states
+
+In an unsupervised approach, walk across the genome and identify all combinations that are frequently found
+
+Hidden Markov Model
+
+Walk across genome; identify latent/hidden states
+
+Latent state emits an observed biochemical marker
+
+Can train giant HMM that runs across all cell types to learn hidden states
+
+This HMM captures state transitions and the combinatorial combinations.
+
+Can then compress all the biomarker profiles into a vector of hidden states, and represent genome and any single cell type with one track.
+
+A comprehensive functional annotation of the human genome
+
+~20,000 genes, we know largely where they are
+
+We discovered ~2 million novel putative control elements: only occupy ~8% of genome
+
+Also discovered cell-types specific usage of elements
+
+A very complex control systems enables the complexity of a human.
+
+This is how we first started opening up the rest of the genome and understanding the other 99%.
+
+We still believe that most of the genome is neural and not doing anything; hasn't been weeded out through evolution.
+
+2 million control elements show highly modular activity defining tissue identity
+
+What's defining cell type tissue and identity is intricate activation of elements.
+
+Beautiful mapping of function of genes and what activates them.
+
+>95% of complex disease-associated variants are not in genes instead likely disrupting control elements
+
+Only 4.9% of known disease-associated variants break genes (breaks the coding sequence of genes)
+
+Remaining 95% of disease-associated variants are outside; likely break control elements
+
+Question: What cell type is relevant to study for a specific disease?
+
+Ex: Alzheimer's Disease, neurodegenerative disease, which cell type should you study?
+
+Neurons perhaps? Neurons degenerate
+
+We find actually immune cells affect Alzheimer's.
+
+Take AD variant positions and overlap with cell type Manhattan plots
+
+Immune/blood cell types prove most prominent
+
+Immune cells are responsible for clearing plaques
+
+But genetic variants that disrupt immune cells prevent removal of plaques
+
+May cause neurons to die -- exact mechanism is not known
+
+Data-driven approach shows that large proportion of variants that affect AD act through immune elements rather than neuronal elements
+
+Supported by mouse model experiments
+
+Learning the DNA regulatory code of the genome
+
+What are the DNA words and grammars that define tissue-specific control elements?
+
+Transcription factors love to bind to DNA sequences with specific words. The basis of the regulatory code is these little landing pads for proteins.
+
+Can we learn from sequences to determine their activation patterns?
+
+Supervised machine learning for decoding DNA words in tissue-specific control elements
+
+Classify a sequence as part of a module/tissue type or not (is it active?)
+
+Used neural networks; we don't know a good way of encoding DNA sequences (people have tried for a while hand-engineering features)
+
+Apply an agnostic approach
+
+Every artificial neuron in a neural network can encode some sort of DNA word and this neuron can be activated every time it sees this word. The neurons are pattern detectors.
+
+Advantage: do not need to specify features; neurons in neural network will identify features on its own
+
+We use deep convolutional neural networks since we want to exploit locality across sequences.
+
+Instead of just predicting one activation, we use multi-task deepCNN to jointly predict binding of multiple transcription factors
+
+With this approach, we have prediction accuracy of mean auROC of 0.82 and mean auPRC of 0.65.
+
+We're getting tissue specific activations of the genome.
+
+More interested in features extracted by the neural network rather than predictions
+
+Learn 1000s of known and novel DNA words defining the regulatory code of tissue-specific control elements
+
+Next, can we interpret how the same DNA sequence gives rise to dynamic activation of control elements in different cell states?
+
+Say we have a neural network that predicts activations for various regions. We want to understand why it does that. So we can that recursively backpropagate to individual nucleotides that contribute to the activation.
+
+DeepLIFT: Kundaje lab.
+
+Different DNA word grammars can activate same control element in different tissues.
+
+We can see for different cell types, which words are active and combinatorially define activation.
+
+So like natural language, DNA has words and grammars.
+
+How can we use this to understand disease?
+
+Let's look at coronary heart disease.
+
+CNNs can predict and interpret effects of disease-associated genetic variants in the relevant tissue context.
+
+We look at unstimulated coronary smooth muscle cells. Genome-wide association study says a certain C->T variant is super important. However, the neural network indicates it doesn't matter.
+
+When we stimulate these cells, the neural network actually finds a certain word - that has the position of the C - that is important.
+
+So we find that stimulated cells are the ones that are important to target, not unstimulated cells.
+
+Hence, neural networks help us understand what may be important for disease and take action appropriately.
+
+Future of personalized medicine
+
+Personal genome sequence + personal functional genomic data + electronic medical records/clinical data/biometrics/literature mining -> domain-specific machine learning + AI -> rapid interpretation of personal genomes + data-driven personal diagnosis (cause rather than symptoms) + drug target identification and design + optimal treatment regimes
+
+For example, in cancer, if we can track patients over time (with functional assays), we can better determine how to treat the disease.
+
+Within a decade, most of the human population will probably be sequenced, leading to many exciting opportunities
+
